@@ -12,8 +12,8 @@ class CustomTokenizer:
 
     def tokenize(self, text):
         text = text.lower()
-        text = re.sub(r"<br\s*/?>", " ", text)  # Replace <br> or <br /> with space
-        text = re.sub(r"<[^>]+>", " ", text)   # Remove any remaining HTML tags
+        text = re.sub(r"<br\s*/?>", " ", text)  # replace <br> or <br /> with space
+        text = re.sub(r"<[^>]+>", " ", text)   # remove any remaining HTML tags
         text = re.sub(r'([!?.,:;()"])', r' \1 ', text)  # isolate punctuation 
         text = re.sub(r"\s+", " ", text)  # clean multiple spaces
         return text.strip().split()
