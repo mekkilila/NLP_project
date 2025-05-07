@@ -370,3 +370,47 @@ def longest_and_shortest_reviews_by_sentiment(train_data, tokenizer, num_reviews
         print(f"Length: {length} tokens\n{text[:500]}...\n")
 
     return result
+
+
+def get_extreme_reviews_by_sentiment(train_data, tokenizer, num_reviews=5):
+    """
+    Returns the shortest and longest reviews by sentiment (positive and negative).
+
+    Parameters
+    ----------
+    train_data : list of dict
+        Each dict must contain 'text' and 'label' (0 = negative, 1 = positive).
+    tokenizer : object
+        HuggingFace tokenizer with a .tokenize() method.
+    num_reviews : int
+        Number of shortest/longest reviews to return per class.
+
+    Returns
+    -------
+    Dict with keys:
+        - 'shortest_negative'
+        - 'shortest_positive'
+        - 'longest_negative'
+        - 'longest_positive'
+      Each maps to a list of tuples: (token_length, review_text)
+    """
+    # Separate reviews by label
+    negative_reviews = [
+        (len(tokenizer.tokenize(sample['text'])), sample['text'])
+        for sample in train_data if sample['label'] == 0
+    ]
+    positive_reviews = [
+        (len(tokenizer.tokenize(sample['text'])), sample['text'])
+        for sample in train_data if sample['label'] == 1
+    ]
+
+    # Sort each group by token length
+    negative_reviews.sort(key=lambda x: x[0])
+    positive_reviews.sort(key=lambda x: x[0])
+
+    return {
+        'shortest_negative': negative_reviews[:num_reviews],
+        'longest_negative': negative_reviews[-num_reviews:],
+        'shortest_positive': positive_reviews[:num_reviews],
+        'longest_positive': positive_reviews[-num_reviews:]
+    }
